@@ -1,0 +1,26 @@
+# Environment & virtualenv
+/venv/
+/venv2/
+/.idea/
+/.vscode/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+/logs/
+*.log
+
+# Sensitive configs (preserve templates)
+configs/*.json
+configs/*.cfg
+!configs/.gitkeep
+
+# Exclude raw download temp sources and git tools
+sources/
+free_plugins/
+github_release/
+tools/mingit/
+*.zip
