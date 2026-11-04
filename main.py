@@ -19,7 +19,7 @@ import Utils.cardinal_tools
 import Utils.config_loader as cfg_loader
 from first_setup import first_setup
 from Utils.logger import configure_logging
-from cardinal import Cardinal
+from studio import Cardinal
 import Utils.exceptions as excs
 from locales.localizer import Localizer
 

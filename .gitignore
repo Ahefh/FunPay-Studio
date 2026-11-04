@@ -18,6 +18,11 @@ configs/*.json
 configs/*.cfg
 !configs/.gitkeep
 
+# Build artifacts
+/build/
+/dist/
+*.spec
+
 # Exclude raw download temp sources and git tools
 sources/
 free_plugins/
