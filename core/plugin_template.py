@@ -11,7 +11,7 @@ import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 from core.license_manager import LicenseManager
 
@@ -29,7 +29,7 @@ BIND_TO_DELETE = None
 # Официальная ссылка на наш FunPay магазин для ненавязчивого промо
 OUR_FUNPAY_SHOP = "https://funpay.com/users/11535828/"
 
-def check_plugin_license(cardinal: Cardinal, plugin_id: str, license_key: str) -> bool:
+def check_plugin_license(cardinal: Studio, plugin_id: str, license_key: str) -> bool:
     """
     Проверяет валидность коммерческой лицензии от yuepi-FPS.
     """

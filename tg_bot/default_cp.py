@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 from telebot.types import CallbackQuery, Message
 import logging
 
@@ -18,7 +18,7 @@ localizer = Localizer()
 _ = localizer.translate
 
 
-def init_default_cp(crd: Cardinal, *args):
+def init_default_cp(crd: Studio, *args):
     tg = crd.telegram
     bot = tg.bot
 

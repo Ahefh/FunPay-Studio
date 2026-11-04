@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 from tg_bot import utils, keyboards, CBT, MENU_CFG
 from telebot.types import InlineKeyboardMarkup as K, InlineKeyboardButton as B, Message, CallbackQuery
@@ -22,7 +22,7 @@ localizer = Localizer()
 _ = localizer.translate
 
 
-def init_auto_response_cp(cardinal: Cardinal, *args):
+def init_auto_response_cp(cardinal: Studio, *args):
     tg = cardinal.telegram
     bot = tg.bot
 

@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 from telebot.types import InlineKeyboardMarkup as K, InlineKeyboardButton as B
 
@@ -64,7 +64,7 @@ def power_off(instance_id: int, state: int) -> K:
     return kb
 
 
-def language_settings(c: Cardinal) -> K:
+def language_settings(c: Studio) -> K:
     lang = c.MAIN_CFG["Other"]["language"]
     langs = {
         "uk": "🇺🇦", "en": "🇺🇸", "ru": "🇷🇺"
@@ -82,7 +82,7 @@ def language_settings(c: Cardinal) -> K:
     return kb
 
 
-def main_settings(c: Cardinal) -> K:
+def main_settings(c: Studio) -> K:
     """
     Генерирует клавиатуру основных переключателей (CBT.CATEGORY:main).
 
@@ -111,7 +111,7 @@ def main_settings(c: Cardinal) -> K:
     return kb
 
 
-def new_message_view_settings(c: Cardinal) -> K:
+def new_message_view_settings(c: Studio) -> K:
     """
     Генерирует клавиатуру настроек вида уведомлений о новых сообщениях (CBT.CATEGORY:newMessageView).
 
@@ -136,7 +136,7 @@ def new_message_view_settings(c: Cardinal) -> K:
     return kb
 
 
-def greeting_settings(c: Cardinal):
+def greeting_settings(c: Studio):
     """
     Генерирует клавиатуру настроек приветственного сообщения (CBT.CATEGORY:greetings).
 
@@ -164,7 +164,7 @@ def greeting_settings(c: Cardinal):
     return kb
 
 
-def order_confirm_reply_settings(c: Cardinal):
+def order_confirm_reply_settings(c: Studio):
     """
     Генерирует клавиатуру настроек ответа на подтверждение заказа (CBT.CATEGORY:orderConfirm).
 
@@ -182,7 +182,7 @@ def order_confirm_reply_settings(c: Cardinal):
     return kb
 
 
-def authorized_users(c: Cardinal, offset: int):
+def authorized_users(c: Studio, offset: int):
     """
     Генерирует клавиатуру со списком авторизованных пользователей (CBT.AUTHORIZED_USERS:<offset>).
 
@@ -211,7 +211,7 @@ def authorized_users(c: Cardinal, offset: int):
     return kb
 
 
-def authorized_user_settings(c: Cardinal, user_id: int, offset: int, user_link: bool):
+def authorized_user_settings(c: Studio, user_id: int, offset: int, user_link: bool):
     """
     Генерирует клавиатуру с настройками пользователя (CBT.AUTHORIZED_USER_SETTINGS:<offset>).
     """
@@ -226,7 +226,7 @@ def authorized_user_settings(c: Cardinal, user_id: int, offset: int, user_link: 
     return kb
 
 
-def proxy(c: Cardinal, offset: int, proxies: dict[str, bool]):
+def proxy(c: Studio, offset: int, proxies: dict[str, bool]):
     """
         Генерирует клавиатуру со списком прокси (CBT.PROXY:<offset>).
 
@@ -256,7 +256,7 @@ def proxy(c: Cardinal, offset: int, proxies: dict[str, bool]):
     return kb
 
 
-def review_reply_settings(c: Cardinal):
+def review_reply_settings(c: Studio):
     """
     Генерирует клавиатуру настроек ответа на отзыв (CBT.CATEGORY:reviewReply).
 
@@ -274,7 +274,7 @@ def review_reply_settings(c: Cardinal):
     return kb
 
 
-def notifications_settings(c: Cardinal, chat_id: int) -> K:
+def notifications_settings(c: Studio, chat_id: int) -> K:
     """
     Генерирует клавиатуру настроек уведомлений (CBT.CATEGORY:telegram).
 
@@ -305,7 +305,7 @@ def notifications_settings(c: Cardinal, chat_id: int) -> K:
     return kb
 
 
-def announcements_settings(c: Cardinal, chat_id: int):
+def announcements_settings(c: Studio, chat_id: int):
     """
     Генерирует клавиатуру настроек уведомлений объявлений.
 
@@ -326,7 +326,7 @@ def announcements_settings(c: Cardinal, chat_id: int):
     return kb
 
 
-def blacklist_settings(c: Cardinal) -> K:
+def blacklist_settings(c: Studio) -> K:
     """
     Генерирует клавиатуру настроек черного списка (CBT.CATEGORY:blockList).
 
@@ -350,7 +350,7 @@ def blacklist_settings(c: Cardinal) -> K:
     return kb
 
 
-def commands_list(c: Cardinal, offset: int) -> K:
+def commands_list(c: Studio, offset: int) -> K:
     """
     Генерирует клавиатуру со списком команд (CBT.CMD_LIST:<offset>).
 
@@ -377,7 +377,7 @@ def commands_list(c: Cardinal, offset: int) -> K:
     return kb
 
 
-def edit_command(c: Cardinal, command_index: int, offset: int) -> K:
+def edit_command(c: Studio, command_index: int, offset: int) -> K:
     """
     Генерирует клавиатуру изменения параметров команды (CBT.EDIT_CMD:<command_num>:<offset>).
 
@@ -417,7 +417,7 @@ def products_files_list(offset: int) -> K:
         files = os.listdir("storage/products")[offset:offset + 5]
 
     for index, name in enumerate(files):
-        amount = Utils.cardinal_tools.count_products(f"storage/products/{name}")
+        amount = Utils.studio_tools.count_products(f"storage/products/{name}")
         keyboard.add(B(f"{amount} {_('gl_pcs')}, {name}", None, f"{CBT.EDIT_PRODUCTS_FILE}:{offset + index}:{offset}"))
 
     keyboard = add_navigation_buttons(keyboard, offset, MENU_CFG.PF_BTNS_AMOUNT, len(files),
@@ -452,7 +452,7 @@ def products_file_edit(file_number: int, offset: int, confirmation: bool = False
     return keyboard
 
 
-def lots_list(cardinal: Cardinal, offset: int) -> K:
+def lots_list(cardinal: Studio, offset: int) -> K:
     """
     Создает клавиатуру со списком лотов с автовыдачей. (lots:<offset>).
 
@@ -478,7 +478,7 @@ def lots_list(cardinal: Cardinal, offset: int) -> K:
     return keyboard
 
 
-def funpay_lots_list(c: Cardinal, offset: int):
+def funpay_lots_list(c: Studio, offset: int):
     """
     Генерирует клавиатуру со списком лотов текущего профиля (funpay_lots:<offset>).
 
@@ -507,7 +507,7 @@ def funpay_lots_list(c: Cardinal, offset: int):
     return keyboard
 
 
-def edit_lot(c: Cardinal, lot_number: int, offset: int) -> K:
+def edit_lot(c: Studio, lot_number: int, offset: int) -> K:
     """
     Генерирует клавиатуру изменения лота (CBT.EDIT_AD_LOT:<lot_num>:<offset>).
 
@@ -605,7 +605,7 @@ def reply(node_id: int, username: str, again: bool = False, extend: bool = False
     return kb
 
 
-def templates_list(c: Cardinal, offset: int) -> K:
+def templates_list(c: Studio, offset: int) -> K:
     """
     Генерирует клавиатуру со списком шаблонов ответов. (CBT.TMPLT_LIST:<offset>).
 
@@ -630,7 +630,7 @@ def templates_list(c: Cardinal, offset: int) -> K:
     return kb
 
 
-def edit_template(c: Cardinal, template_index: int, offset: int) -> K:
+def edit_template(c: Studio, template_index: int, offset: int) -> K:
     """
     Генерирует клавиатуру изменения шаблона ответа (CBT.EDIT_TMPLT:<template_index>:<offset>).
 
@@ -646,7 +646,7 @@ def edit_template(c: Cardinal, template_index: int, offset: int) -> K:
     return kb
 
 
-def templates_list_ans_mode(c: Cardinal, offset: int, node_id: int, username: str, prev_page: int,
+def templates_list_ans_mode(c: Studio, offset: int, node_id: int, username: str, prev_page: int,
                             extra: list | None = None):
     """
     Генерирует клавиатуру со списком шаблонов ответов.
@@ -691,7 +691,7 @@ def templates_list_ans_mode(c: Cardinal, offset: int, node_id: int, username: st
     return kb
 
 
-def plugins_list(c: Cardinal, offset: int):
+def plugins_list(c: Studio, offset: int):
     """
     Генерирует клавиатуру со списком плагинов (CBT.PLUGINS_LIST:<offset>).
 
@@ -721,7 +721,7 @@ def plugins_list(c: Cardinal, offset: int):
     return kb
 
 
-def edit_plugin(c: Cardinal, uuid: str, offset: int, ask_to_delete: bool = False):
+def edit_plugin(c: Studio, uuid: str, offset: int, ask_to_delete: bool = False):
     """
     Генерирует клавиатуру управления плагином.
 

@@ -5,10 +5,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from Utils.cardinal_tools import safe_text
+from Utils.studio_tools import safe_text
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 from tg_bot import utils, keyboards, CBT
 from tg_bot.static_keyboards import CLEAR_STATE_BTN
@@ -23,7 +23,7 @@ localizer = Localizer()
 _ = localizer.translate
 
 
-def init_templates_cp(cardinal: Cardinal, *args):
+def init_templates_cp(cardinal: Studio, *args):
     tg = cardinal.telegram
     bot = tg.bot
 

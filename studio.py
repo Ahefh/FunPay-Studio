@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Callable
 
 from FunPayAPI import types
 from FunPayAPI.common.enums import SubCategoryTypes
-from Utils.cardinal_tools import validate_proxy, build_proxy
+from Utils.studio_tools import validate_proxy, build_proxy
 
 if TYPE_CHECKING:
     from configparser import ConfigParser
@@ -29,7 +29,7 @@ import handlers
 import announcements
 from locales.localizer import Localizer
 from FunPayAPI import utils as fp_utils
-from Utils import cardinal_tools
+from Utils import studio_tools
 import tg_bot.bot
 
 from threading import Thread
@@ -39,12 +39,12 @@ localizer = Localizer()
 _ = localizer.translate
 
 
-def get_cardinal() -> None | Cardinal:
+def get_cardinal() -> None | Studio:
     """
     Возвращает существующий экземпляр кардинала.
     """
-    if hasattr(Cardinal, "instance"):
-        return getattr(Cardinal, "instance")
+    if hasattr(Studio, "instance"):
+        return getattr(Studio, "instance")
 
 
 class PluginData:
@@ -83,10 +83,10 @@ class PluginData:
         self.pinned = pinned
 
 
-class Cardinal(object):
+class Studio(object):
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):
-            cls.instance = super(Cardinal, cls).__new__(cls)
+            cls.instance = super(Studio, cls).__new__(cls)
         return getattr(cls, "instance")
 
     def __init__(self, main_config: ConfigParser,
@@ -105,7 +105,7 @@ class Cardinal(object):
         self.RAW_AR_CFG = raw_auto_response_config
         # Прокси
         self.proxy = {}
-        self.proxy_dict = cardinal_tools.load_proxy_dict()  # прокси {0: "login:password@ip:port", 1: "ip:port"...}
+        self.proxy_dict = studio_tools.load_proxy_dict()  # прокси {0: "login:password@ip:port", 1: "ip:port"...}
         if self.MAIN_CFG["Proxy"].getboolean("enable"):
             if self.MAIN_CFG["Proxy"]["proxy"]:
                 logger.info(_("crd_proxy_detected"))
@@ -120,9 +120,9 @@ class Cardinal(object):
                 if proxy_str not in self.proxy_dict.values():
                     max_id = max(self.proxy_dict.keys(), default=-1)
                     self.proxy_dict[max_id + 1] = proxy_str
-                    cardinal_tools.cache_proxy_dict(self.proxy_dict)
+                    studio_tools.cache_proxy_dict(self.proxy_dict)
 
-                if self.MAIN_CFG["Proxy"].getboolean("check") and not cardinal_tools.check_proxy(self.proxy):
+                if self.MAIN_CFG["Proxy"].getboolean("check") and not studio_tools.check_proxy(self.proxy):
                     sys.exit()
 
         self.account = FunPayAPI.Account(self.MAIN_CFG["FunPay"]["golden_key"],
@@ -154,8 +154,8 @@ class Cardinal(object):
         # Тег последнего event'а, после которого был запущен отдельный поток обновления профилей и состояний лотов.
         self.last_greeting_chat_id_threshold_change_tag: str | None = None
         self.greeting_threshold_chat_ids = set()  # ID чатов для последующего обновления  self.greeting_chat_id_threshold
-        self.blacklist = cardinal_tools.load_blacklist()  # ЧС.
-        self.old_users = cardinal_tools.load_old_users(
+        self.blacklist = studio_tools.load_blacklist()  # ЧС.
+        self.old_users = studio_tools.load_old_users(
             float(self.MAIN_CFG["Greetings"]["greetingsCooldown"]))  # Уже написавшие пользователи.
         self.greeting_chat_id_threshold = max(self.old_users.keys(), default=0)
         # пороговое значение для определения новых чатов (для приветствия)
@@ -205,8 +205,8 @@ class Cardinal(object):
         }
 
         self.plugins: dict[str, PluginData] = {}
-        self.disabled_plugins = cardinal_tools.load_disabled_plugins()
-        self.pinned_plugins = cardinal_tools.load_pinned_plugins()
+        self.disabled_plugins = studio_tools.load_disabled_plugins()
+        self.pinned_plugins = studio_tools.load_pinned_plugins()
 
     def __init_account(self) -> None:
         """
@@ -216,8 +216,8 @@ class Cardinal(object):
             try:
                 self.account.get()
                 self.balance = self.get_balance()
-                greeting_text = cardinal_tools.create_greeting_text(self)
-                cardinal_tools.set_console_title(f"FunPay Studio - {self.account.username} ({self.account.id})")
+                greeting_text = studio_tools.create_greeting_text(self)
+                studio_tools.set_console_title(f"FunPay Studio - {self.account.username} ({self.account.id})")
                 for line in greeting_text.split("\n"):
                     logger.info(line)
                 break
@@ -328,14 +328,14 @@ class Cardinal(object):
                 raise_ok = True
                 last_time = self.raised_time.get(subcat.category.id)
                 self.raised_time[subcat.category.id] = new_time = int(time.time())  # locale
-                time_delta = "" if not last_time else f" Последнее поднятие: {cardinal_tools.time_to_str(new_time - last_time)} назад."
-                error_text = f"Подождите {cardinal_tools.time_to_str(wait_time)}."
+                time_delta = "" if not last_time else f" Последнее поднятие: {studio_tools.time_to_str(new_time - last_time)} назад."
+                error_text = f"Подождите {studio_tools.time_to_str(wait_time)}."
             except FunPayAPI.exceptions.RaiseError as e:
                 if e.error_message is not None:
                     error_text = e.error_message
                 if e.wait_time is not None:
                     logger.warning(_("crd_raise_time_err", subcat.category.name, error_text,
-                                     cardinal_tools.time_to_str(e.wait_time)))
+                                     studio_tools.time_to_str(e.wait_time)))
                     wait_time = e.wait_time
                 else:
                     logger.error(_("crd_raise_unexpected_err", subcat.category.name))
@@ -427,7 +427,7 @@ class Cardinal(object):
 
         pos = 0
         entities = []
-        while entity := cardinal_tools.ENTITY_RE.search(msg_text, pos=pos):
+        while entity := studio_tools.ENTITY_RE.search(msg_text, pos=pos):
             if text := msg_text[pos:entity.span()[0]].strip():
                 entities.extend(self.split_text(text))
 
@@ -912,7 +912,7 @@ class Cardinal(object):
             self.disabled_plugins.remove(uuid)
         elif not self.plugins[uuid].enabled and uuid not in self.disabled_plugins:
             self.disabled_plugins.append(uuid)
-        cardinal_tools.cache_disabled_plugins(self.disabled_plugins)
+        studio_tools.cache_disabled_plugins(self.disabled_plugins)
 
     def pin_plugin(self, uuid):
         """
@@ -924,7 +924,7 @@ class Cardinal(object):
             self.pinned_plugins.remove(uuid)
         elif self.plugins[uuid].pinned and uuid not in self.pinned_plugins:
             self.pinned_plugins.append(uuid)
-        cardinal_tools.cache_pinned_plugins(self.pinned_plugins)
+        studio_tools.cache_pinned_plugins(self.pinned_plugins)
 
     # Настройки
     @property

@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 from tg_bot import CBT, static_keyboards
 from telebot import types
@@ -21,7 +21,7 @@ localizer = Localizer()
 _ = localizer.translate
 
 
-def init_config_loader_cp(cardinal: Cardinal, *args):
+def init_config_loader_cp(cardinal: Studio, *args):
     tg = cardinal.telegram
     bot = tg.bot
 

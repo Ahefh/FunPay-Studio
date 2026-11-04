@@ -281,7 +281,7 @@ act_edit_watermark = "Введи новый текст водяного знак
                      "<code>𝗙𝘂𝗻𝗣𝗮𝘆 𝗖𝗮𝗿𝗱𝗶𝗻𝗮𝗹</code>\n<code>𝘍𝘶𝘯𝘗𝘢𝘺 𝘊𝘢𝘳𝘥𝘪𝘯𝘢𝘭</code>\n" \
                      "<code>𝙁𝙪𝙣𝙋𝙖𝙮 𝘾𝙖𝙧𝙙𝙞𝙣𝙖𝙡</code>\n<code>𝙵𝚞𝚗𝙿𝚊𝚢 𝙲𝚊𝚛𝚍𝚒𝚗𝚊𝚕</code>\n" \
                      "<code>ᖴᑌᑎᑭᗩY ᑕᗩᖇᗪIᑎᗩᒪ</code>\n" \
-                     "<code>FunPay Studio</code>\n<code>[FunPay / Cardinal]</code>\n" \
+                     "<code>FunPay Studio</code>\n<code>[FunPay / Studio]</code>\n" \
                      "<code>🤖</code>\n<code>🐦</code>\n\n" \
                      "Примеры можно скопировать нажатием и отредактировать по своему желанию.\nУчти, что на FunPay эмодзи " \
                      "🐦 выглядит не так, как в Telegram." \

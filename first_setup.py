@@ -7,7 +7,7 @@ from configparser import ConfigParser
 import time
 import telebot
 from colorama import Fore, Style
-from Utils.cardinal_tools import validate_proxy, hash_password, build_proxy, check_proxy
+from Utils.studio_tools import validate_proxy, hash_password, build_proxy, check_proxy
 from Utils.config_loader import load_main_config
 
 # locale#locale#locale

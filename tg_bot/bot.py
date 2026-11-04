@@ -11,7 +11,7 @@ from FunPayAPI import Account
 from tg_bot.utils import NotificationTypes
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 import os
 import sys
@@ -26,7 +26,7 @@ import logging
 from telebot.types import InlineKeyboardMarkup as K, InlineKeyboardButton as B, Message, CallbackQuery, BotCommand, \
     InputFile
 from tg_bot import utils, static_keyboards as skb, keyboards as kb, CBT
-from Utils import cardinal_tools, updater
+from Utils import studio_tools, updater
 from locales.localizer import Localizer
 
 logger = logging.getLogger("TGBot")
@@ -36,7 +36,7 @@ telebot.apihelper.ENABLE_MIDDLEWARE = True
 
 
 class TGBot:
-    def __init__(self, cardinal: Cardinal):
+    def __init__(self, cardinal: Studio):
         self.cardinal = cardinal
         if cardinal.MAIN_CFG["Telegram"]["proxy"]:
             telebot.apihelper.proxy = {"https": cardinal.MAIN_CFG["Telegram"]["proxy"],
@@ -448,7 +448,7 @@ class TGBot:
             return
 
         self.cardinal.blacklist.append(nickname)
-        cardinal_tools.cache_blacklist(self.cardinal.blacklist)
+        studio_tools.cache_blacklist(self.cardinal.blacklist)
         logger.info(_("log_user_blacklisted", m.from_user.username, m.from_user.id, nickname))
         self.bot.send_message(m.chat.id, _("user_blacklisted", nickname))
 
@@ -469,7 +469,7 @@ class TGBot:
             self.bot.send_message(m.chat.id, _("not_blacklisted", nickname))
             return
         self.cardinal.blacklist.remove(nickname)
-        cardinal_tools.cache_blacklist(self.cardinal.blacklist)
+        studio_tools.cache_blacklist(self.cardinal.blacklist)
         logger.info(_("log_user_unbanned", m.from_user.username, m.from_user.id, nickname))
         self.bot.send_message(m.chat.id, _("user_unbanned", nickname))
 
@@ -648,14 +648,14 @@ class TGBot:
         self.bot.send_message(m.chat.id, _("sys_info", cpu_usage, psutil.Process().cpu_percent(),
                                            ram.total // 1048576, ram.used // 1048576, ram.free // 1048576,
                                            psutil.Process().memory_info().rss // 1048576,
-                                           cardinal_tools.time_to_str(uptime), m.chat.id))
+                                           studio_tools.time_to_str(uptime), m.chat.id))
 
     def restart_cardinal(self, m: Message):
         """
         Перезапускает кардинал.
         """
         self.bot.send_message(m.chat.id, _("restarting"))
-        cardinal_tools.restart_program()
+        studio_tools.restart_program()
 
     def ask_power_off(self, m: Message):
         """
@@ -686,7 +686,7 @@ class TGBot:
         if state == 6:
             self.bot.edit_message_text(_("power_off_6"), c.message.chat.id, c.message.id)
             self.bot.answer_callback_query(c.id)
-            cardinal_tools.shut_down()
+            studio_tools.shut_down()
             return
 
         self.bot.edit_message_text(_(f"power_off_{state}"), c.message.chat.id, c.message.id,

@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 from tg_bot.utils import NotificationTypes
 from telebot.types import InlineKeyboardMarkup as K, InlineKeyboardButton as B
@@ -172,7 +172,7 @@ def get_keyboard(data: dict) -> K | None:
     return kb
 
 
-def announcements_loop_iteration(crd: Cardinal, ignore_last_tag: bool = False):
+def announcements_loop_iteration(crd: Studio, ignore_last_tag: bool = False):
     global LAST_TAG
     if not (data := get_announcement(ignore_last_tag=ignore_last_tag)):
         time.sleep(REQUESTS_DELAY)
@@ -201,7 +201,7 @@ def announcements_loop_iteration(crd: Cardinal, ignore_last_tag: bool = False):
                daemon=True).start()
 
 
-def announcements_loop(crd: Cardinal):
+def announcements_loop(crd: Studio):
     """
     Бесконечный цикл получения объявлений.
     """
@@ -216,7 +216,7 @@ def announcements_loop(crd: Cardinal):
         time.sleep(REQUESTS_DELAY)
 
 
-def main(crd: Cardinal):
+def main(crd: Studio):
     Thread(target=announcements_loop, args=(crd,), daemon=True).start()
 
 

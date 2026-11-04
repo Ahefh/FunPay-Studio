@@ -6,10 +6,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
     from tg_bot.bot import TGBot
 
-from Utils import config_loader as cfg_loader, exceptions as excs, cardinal_tools, updater
+from Utils import config_loader as cfg_loader, exceptions as excs, studio_tools, updater
 from telebot.types import InlineKeyboardButton as Button
 from tg_bot import utils, keyboards, CBT
 from tg_bot.static_keyboards import CLEAR_STATE_BTN
@@ -80,7 +80,7 @@ def download_file(tg: TGBot, msg: types.Message, file_name: str = "temp_file.txt
     return True
 
 
-def init_uploader(cardinal: Cardinal):
+def init_uploader(cardinal: Studio):
     tg = cardinal.telegram
     bot = tg.bot
 
@@ -97,13 +97,13 @@ def init_uploader(cardinal: Cardinal):
         tg.clear_state(m.chat.id, m.from_user.id, True)
         if not check_file(tg, m, type_="txt"):
             return
-        with cardinal_tools.get_products_file_lock(f"storage/products/{m.document.file_name}"):
+        with studio_tools.get_products_file_lock(f"storage/products/{m.document.file_name}"):
             if not download_file(tg, m, m.document.file_name,
                                  custom_path=f"storage/products"):
                 return
 
         try:
-            products_count = cardinal_tools.count_products(f"storage/products/{utils.escape(m.document.file_name)}")
+            products_count = studio_tools.count_products(f"storage/products/{utils.escape(m.document.file_name)}")
         except:
             bot.send_message(m.chat.id, "❌ Произошла ошибка при подсчете товаров.")
             logger.debug("TRACEBACK", exc_info=True)

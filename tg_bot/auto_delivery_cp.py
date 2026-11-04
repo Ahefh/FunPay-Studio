@@ -9,13 +9,13 @@ import datetime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 from tg_bot import utils, keyboards as kb, CBT, MENU_CFG
 from tg_bot.static_keyboards import CLEAR_STATE_BTN
 from telebot.types import InlineKeyboardMarkup as K, InlineKeyboardButton as B, Message, CallbackQuery
 
-from Utils import cardinal_tools
+from Utils import studio_tools
 from locales.localizer import Localizer
 
 import itertools
@@ -30,7 +30,7 @@ localizer = Localizer()
 _ = localizer.translate
 
 
-def init_auto_delivery_cp(crd: Cardinal, *args):
+def init_auto_delivery_cp(crd: Studio, *args):
     tg = crd.telegram
     bot = tg.bot
     filename_re = re.compile(r"[А-Яа-яЁёA-Za-z0-9_\- ]+")
@@ -457,7 +457,7 @@ $product""")  # todo
             return
 
         file_name = files[file_index]
-        products_amount = cardinal_tools.count_products(f"storage/products/{file_name}")
+        products_amount = studio_tools.count_products(f"storage/products/{file_name}")
         nl = "\n"
         delivery_objs = [i for i in crd.AD_CFG.sections() if crd.AD_CFG[i].get("productsFileName") == file_name]
 
@@ -521,7 +521,7 @@ $product""")  # todo
         products_text = "\n".join(products)
 
         try:
-            with cardinal_tools.get_products_file_lock(f"storage/products/{file_name}"):
+            with studio_tools.get_products_file_lock(f"storage/products/{file_name}"):
                 with open(f"storage/products/{file_name}", "a", encoding="utf-8") as f:
                     f.write("\n")
                     f.write(products_text)
@@ -547,7 +547,7 @@ $product""")  # todo
             return
 
         file_name = files[file_index]
-        with cardinal_tools.get_products_file_lock(f"storage/products/{file_name}"):
+        with studio_tools.get_products_file_lock(f"storage/products/{file_name}"):
             with open(f"storage/products/{file_name}", "r", encoding="utf-8") as f:
                 data = f.read().strip()
                 if not data:
@@ -597,7 +597,7 @@ $product""")  # todo
             return
 
         try:
-            with cardinal_tools.get_products_file_lock(f"storage/products/{file_name}"):
+            with studio_tools.get_products_file_lock(f"storage/products/{file_name}"):
                 os.remove(f"storage/products/{file_name}")
 
             logger.info(_("log_gf_deleted", c.from_user.username, c.from_user.id, file_name))

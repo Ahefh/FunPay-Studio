@@ -8,7 +8,7 @@ import math
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 from telebot.types import InlineKeyboardMarkup as K, InlineKeyboardButton as B
 import configparser
@@ -17,7 +17,7 @@ import os.path
 import json
 import time
 import unicodedata
-import Utils.cardinal_tools
+import Utils.studio_tools
 from locales.localizer import Localizer
 from tg_bot import CBT
 
@@ -160,7 +160,7 @@ def escape(text: str) -> str:
     return text
 
 
-def format_message_line(cardinal: Cardinal, msg, last: dict | None = None, *, force_show_author: bool = False,
+def format_message_line(cardinal: Studio, msg, last: dict | None = None, *, force_show_author: bool = False,
                         chat_url: bool = False, mono: bool = True, hide_watermark: bool = False,
                         show_ads: bool = True, show_image_name: bool | None = None,
                         system_message_style: str = "code") -> str:
@@ -171,7 +171,7 @@ def format_message_line(cardinal: Cardinal, msg, last: dict | None = None, *, fo
     сообщениях, полная/недавняя история чата, синхронизация с форумом) - не дублируй её, зови
     эту функцию (или format_messages() для готового списка сообщений).
 
-    :param cardinal: экземпляр Cardinal (нужен account.id, blacklist, show_image_name).
+    :param cardinal: экземпляр Studio (нужен account.id, blacklist, show_image_name).
     :param msg: сообщение чата (FunPayAPI.types.Message).
     :param last: {"author_id", "by_bot", "badge", "by_vertex"} предыдущего ПОКАЗАННОГО сообщения -
         нужен, чтобы схлопнуть подпись автора у подряд идущих сообщений одного и того же автора.
@@ -264,14 +264,14 @@ def format_message_line(cardinal: Cardinal, msg, last: dict | None = None, *, fo
     return f"{author}{body}"
 
 
-def format_messages(cardinal: Cardinal, messages: list, **options) -> str:
+def format_messages(cardinal: Studio, messages: list, **options) -> str:
     """
     Форматирует список сообщений чата в HTML для Telegram, вызывая format_message_line() для
     каждого сообщения по очереди и склеивая результат (см. её докстринг за подробностями и
     списком поддерживаемых опций - force_show_author/chat_url/mono/hide_watermark/show_ads/
     show_image_name/system_message_style).
 
-    :param cardinal: экземпляр Cardinal (нужен account.id, blacklist, show_image_name).
+    :param cardinal: экземпляр Studio (нужен account.id, blacklist, show_image_name).
     :param messages: список сообщений чата (FunPayAPI.types.Message), от старых к новым.
 
     :return: HTML-форматированный текст (используй с parse_mode="HTML").
@@ -380,7 +380,7 @@ def add_navigation_buttons(keyboard_obj: K, curr_offset: int,
     return keyboard_obj
 
 
-def generate_profile_text(cardinal: Cardinal) -> str:
+def generate_profile_text(cardinal: Studio) -> str:
     """
     Генерирует текст с информацией об аккаунте.
 
@@ -416,7 +416,7 @@ def generate_lot_info_text(lot_obj: configparser.SectionProxy) -> str:
         if not os.path.exists(f"storage/products/{lot_obj.get('productsFileName')}"):
             with open(f"storage/products/{lot_obj.get('productsFileName')}", "w", encoding="utf-8"):
                 pass
-        products_amount = Utils.cardinal_tools.count_products(f"storage/products/{lot_obj.get('productsFileName')}")
+        products_amount = Utils.studio_tools.count_products(f"storage/products/{lot_obj.get('productsFileName')}")
         products_amount = f"<code>{products_amount}</code>"
     # locale
     message = f"""<b>{escape(lot_obj.name)}</b>\n

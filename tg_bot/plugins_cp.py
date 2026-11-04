@@ -9,7 +9,7 @@ import os
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 from tg_bot import utils, keyboards, CBT
 from tg_bot.static_keyboards import UPLOAD_PLUGIN
@@ -24,7 +24,7 @@ localizer = Localizer()
 _ = localizer.translate
 
 
-def init_plugins_cp(cardinal: Cardinal, *args):
+def init_plugins_cp(cardinal: Studio, *args):
     tg = cardinal.telegram
     bot = tg.bot
 

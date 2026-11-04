@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 import telebot.apihelper
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 from tg_bot import keyboards as kb, CBT
 from telebot.types import CallbackQuery
 import logging
@@ -21,7 +21,7 @@ localizer = Localizer()
 _ = localizer.translate
 
 
-def init_authorized_users_cp(crd: Cardinal, *args):
+def init_authorized_users_cp(crd: Studio, *args):
     tg = crd.telegram
     bot = tg.bot
 

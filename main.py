@@ -15,11 +15,11 @@ try:
 except ModuleNotFoundError:
     pass
 
-import Utils.cardinal_tools
+import Utils.studio_tools
 import Utils.config_loader as cfg_loader
 from first_setup import first_setup
 from Utils.logger import configure_logging
-from studio import Cardinal
+from studio import Studio
 import Utils.exceptions as excs
 from locales.localizer import Localizer
 
@@ -37,7 +37,7 @@ logo = f"""{Fore.CYAN}{Style.BRIGHT}
                                |___/                                
 {Style.RESET_ALL}"""
 
-Utils.cardinal_tools.set_console_title(f"FunPay Studio v{VERSION}")
+Utils.studio_tools.set_console_title(f"FunPay Studio v{VERSION}")
 
 if getattr(sys, 'frozen', False):
     os.chdir(os.path.dirname(sys.executable))
@@ -105,7 +105,7 @@ except Exception as e:
 localizer = Localizer(MAIN_CFG["Other"]["language"])
 
 try:
-    Cardinal(MAIN_CFG, AD_CFG, AR_CFG, RAW_AR_CFG, VERSION).init().run()
+    Studio(MAIN_CFG, AD_CFG, AR_CFG, RAW_AR_CFG, VERSION).init().run()
 except KeyboardInterrupt:
     logger.info("Завершаю программу FunPay Studio...")
     sys.exit()

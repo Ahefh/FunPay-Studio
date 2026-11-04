@@ -7,7 +7,7 @@ import requests
 from locales.localizer import Localizer
 
 if TYPE_CHECKING:
-    from cardinal import Cardinal
+    from studio import Studio
 
 import FunPayAPI.types
 
@@ -25,7 +25,7 @@ import logging
 
 PHOTO_RE = re.compile(r'\$photo=[\d]+')
 ENTITY_RE = re.compile(r"\$photo=\d+|\$new|(\$sleep=(\d+\.\d+|\d+))")
-logger = logging.getLogger("FPS.cardinal_tools")
+logger = logging.getLogger("FPS.studio_tools")
 localizer = Localizer()
 _ = localizer.translate
 
@@ -294,7 +294,7 @@ def load_old_users(greetings_cooldown: float) -> dict[int, float]:
     return users
 
 
-def create_greeting_text(cardinal: Cardinal):
+def create_greeting_text(cardinal: Studio):
     """
     Генерирует приветствие для вывода в консоль после загрузки данных о пользователе.
     """
