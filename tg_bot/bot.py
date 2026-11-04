@@ -287,31 +287,39 @@ class TGBot:
 
     def reg_admin(self, m: Message):
         """
-        Проверяет, есть ли пользователь в списке пользователей с доступом к ПУ TG.
+        FunPay Studio Exclusive: Первый пользователь, нажавший /start, становится
+        полноправным владельцем. Доступ для остальных намертво блокируется.
         """
-        lang = m.from_user.language_code
-        if m.chat.type != "private" or (self.attempts.get(m.from_user.id, 0) >= 5) or m.text is None:
+        if m.chat.type != "private":
             return
-        if not self.cardinal.block_tg_login and \
-                cardinal_tools.check_password(m.text, self.cardinal.MAIN_CFG["Telegram"]["secretKeyHash"]):
-            self.send_notification(text=_("access_granted_notification", m.from_user.username, m.from_user.id),
-                                   notification_type=NotificationTypes.critical, pin=True)
-            self.authorized_users[m.from_user.id] = {}
+
+        # Если список авторизованных пуст — первый запустивший становится владельцем!
+        if not self.authorized_users:
+            self.authorized_users[m.from_user.id] = {"role": "owner", "username": m.from_user.username}
             utils.save_authorized_users(self.authorized_users)
-            if str(m.chat.id) not in self.notification_settings or not self.is_notification_enabled(m.chat.id,
-                                                                                                    NotificationTypes.critical):
-                self.notification_settings[str(m.chat.id)] = self.__default_notification_settings.copy()
-                self.notification_settings[str(m.chat.id)][NotificationTypes.critical] = 1
-                utils.save_notification_settings(self.notification_settings)
-            text = _("access_granted", language=lang)
-            kb_links = None
-            logger.warning(_("log_access_granted", m.from_user.username, m.from_user.id))
-        else:
+            self.setup_chat_notifications(self, m)
+            welcome_text = (
+                f"👑 <b>Добро пожаловать в FunPay Studio (FPS)!</b>\n\n"
+                f"Вы успешно привязаны как <b>единственный Владелец</b> этого бота (ID: <code>{m.from_user.id}</code>).\n"
+                f"🔒 <i>Доступ для всех остальных пользователей Telegram навсегда заблокирован.</i>\n\n"
+                f"Используйте меню ниже для управления автовыдачей, лотами и плагинами."
+            )
+            logger.info(f"[FPS] Владелец бота успешно зарегистрирован: {m.from_user.username} (ID: {m.from_user.id})")
+            self.bot.send_message(m.chat.id, welcome_text, parse_mode="HTML")
+            self.send_settings_menu(m)
+            return
+
+        # Если бот уже привязан к владельцу, а пишет посторонний:
+        if m.from_user.id not in self.authorized_users:
             self.attempts[m.from_user.id] = self.attempts.get(m.from_user.id, 0) + 1
-            text = _("access_denied", m.from_user.username, language=lang)
-            kb_links = kb.links(language=lang)
-            logger.warning(_("log_access_attempt", m.from_user.username, m.from_user.id))
-        self.bot.send_message(m.chat.id, text, reply_markup=kb_links)
+            logger.warning(f"[FPS] Попытка доступа от постороннего: {m.from_user.username} (ID: {m.from_user.id})")
+            if self.attempts[m.from_user.id] <= 3:
+                self.bot.send_message(
+                    m.chat.id,
+                    "⛔️ <b>Доступ запрещен.</b>\nЭтот бот является приватным и привязан к личному аккаунту владельца.",
+                    parse_mode="HTML"
+                )
+            return
 
     def ignore_unauthorized_users(self, c: CallbackQuery):
         """
